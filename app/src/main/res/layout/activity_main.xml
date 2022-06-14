@@ -1,27 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!-- Data Binding의 root는 <layout> -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- 1. 레이아웃뷰와 바인딩할 데이터들 명칭과 클래스지정   -->
     <data>
-
+        <!-- 데이터바인딩으로 연결할 User클래스 객체를 이 레이아웃에서는 user 라는 이름으로 참조하여 사용하겠다는 설정  -->
         <variable
             name="user"
             type="org.techtown.databinding_ex3.User" />
+
     </data>
 
+
+    <!-- 2. 레이아웃 뷰 : 기존에 root로 만들었던 뷰   -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- 텍스트뷰의 글씨를 <data>태에서 지정한 <variable>그 요소의 User객체의 멤버값 사용 : Observarble 멤버이기에 값변경이 관찰되어 자동 반영됨 -->
         <TextView
-            text="@{user.name}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:text="@{user.name}" />
 
+        <!-- int형 값인 user.age는 TextView에 text로 직접 설정이 안되기에 String.valueOf()메소드를 이용하여 문자열로 변환하여 설정 [문자열 결합 +""는 안됨]   -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,6 +40,7 @@
             android:checked="@{user.fav}"
             android:onCheckedChanged="@{user::changeFav}"
             android:text="좋아요" />
+        <!-- onCheckedChanged="" : onClick 속성과 비슷하게 onChcekedChagedListener의 콜백메소드를 자동호출하는 속성 :자동완성 안됨 -->
 
         <Button
             android:layout_width="match_parent"
@@ -56,11 +63,50 @@
             android:onClick="@{user::toggleFav}"
             android:text="change favorite" />
 
+        <!-- onclick속성에 발동하는 메소드 사용하지 않고 xml에서 바로 람다식으로 콜백메소드를 만들어 일반 메소드 호출가 -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#FFFF3300"
-            android:onClick="@{(v)-> user.changeName()}"
-            android:text="change name by lamda function" />
+            android:onClick="@{ (v)-> user.changeName() }"
+            android:text="change name by lamda functioin" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="enter text"
+            android:inputType="text"
+            android:onTextChanged="@{user::onTextChanged}" />
+        <!-- onTextChanged=""속성- 자동완성은 안되지만 직접 작성하면 TetWatcher의 콜백메소드 호출 가능함  -->
+
+        <!-- EditText의 입력글씨를 그대로 보여주는 TextView       -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@{user.msg}" />
+
+
+        <!-- EditText에 글씨 입력하고 버튼 클릭하면 그 글씨 텍스트뷰에 보이기  -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="input title"
+            android:inputType="text"
+            android:onTextChanged="@{(s,start,before,count) -> user.changedTitle(s)}" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{user::clickBtn}"
+            android:text="OK" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@{user.title}" />
+
     </LinearLayout>
 </layout>
